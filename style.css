@@ -1,0 +1,224 @@
+body{
+  height: 100%;
+  margin: 0;
+  font-family: sans-serif;
+}
+
+button{
+  cursor: pointer;
+}
+
+#tile-container{
+  width: 480px;
+  height: 480px;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: gray;
+  padding: 16px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  
+  color: white;
+  font-weight: bold;
+  transition: .75s;
+}
+
+#tile-container.meme{
+  transition: .5s ease-in-out;
+  transform: translate(-50%, -50%);
+  animation: spin .75s 3 linear;
+}
+@keyframes spin {
+    0%  {transform: translate(-50%, -50%) rotate(0deg);}
+    25%  {transform: translate(-10%, -10%) rotate(180deg);}
+    75%  {transform: translate(-90%, -90%) rotate(540deg);}
+    100% {transform: translate(-50%, -50%) rotate(360deg);}   
+}
+
+#tile-container.blurred{
+  filter: blur(5px);
+  transition: .1s;
+}
+
+#game-over-screen{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  text-align: center;
+  display: none;
+}
+
+#game-over-screen-content{
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#game-over-screen p{
+  color: white;
+  margin: 0;
+  font-weight: bold;
+  font-size: 650%;
+  margin-bottom: 7vh;
+}
+
+#game-over-screen #game-restart-button{
+  color: white;
+  padding: 6px 16px;
+  background-color: rgba(255,255,255,.1);
+  border: 2px solid;
+  font-size: 140%;
+  cursor: pointer;
+  transition: .3s;
+  border-radius: 3px;
+}
+
+#game-over-screen #game-restart-button:hover{
+  background-color: white;
+  border-color: white;
+}
+
+#game-over-screen.lost{
+  background-color: rgba(255,0,0,.5);
+}
+
+#game-over-screen.won{
+  background-color: rgba(0,255,0,.5);
+}
+
+#game-over-screen.lost #game-restart-button:hover{
+  color: rgba(255,0,0,.5);
+}
+
+#game-over-screen.won #game-restart-button:hover{
+  color: rgba(0,255,0,.5);
+}
+
+#hide-game-over-screen-button{
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  text-align: center;
+  line-height: 28px;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  color: white;
+  font-weight: bold;
+  font-size: 150%;
+  border: none;
+}
+
+.tile-bg{
+  background-color: rgba(255,255,255,.15);
+  margin: 0 16px 16px 0;
+  width: 100px;
+  height: 100px;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tile-bg:nth-child(4n){
+  margin-right: 0;
+}
+
+.tile{
+  position: absolute;
+  transition: .2s;
+  top: 0;
+  left: 0;
+}
+
+.tile::after{
+  font-size: 180%;
+  line-height: 100px;
+  text-align: center;
+  width: 100px;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tile-2::after{
+  content: "2";
+  background-color: rgba(0,255,0,.05);
+  z-index: 1;
+} .tile-4::after{
+  content: "4";
+  background-color: rgba(10,255,0,.15);
+  z-index: 2;
+} .tile-8::after{
+  content: "8";
+  background-color: rgba(20,255,0,.25);
+  z-index: 3;
+} .tile-16::after{
+  content: "16";
+  background-color: rgba(20,255,0,.35);
+  z-index: 4;
+} .tile-32::after{
+  content: "32";
+  background-color: rgba(30,255,0,.45);
+  z-index: 5;
+} .tile-64::after{
+  content: "64";
+  background-color: rgba(40,255,0,.55);
+  z-index: 6;
+} .tile-128::after{
+  content: "128";
+  background-color: rgba(50,255,0,.65);
+  z-index: 7;
+} .tile-256::after{
+  content: "256";
+  background-color: rgba(60,255,0,.75);
+  z-index: 8;
+} .tile-512::after{
+  content: "512";
+  background-color: rgba(70,255,0,.85);
+  z-index: 9;
+} .tile-1024::after{
+  content: "1024";
+  background-color: rgba(80,255,0,.95);
+  z-index: 10;
+} .tile-2048::after{
+  content: "2048";
+  background-color: rgba(90,255,0,1);
+  z-index: 11;
+}
+
+.tile-1-1{
+  -webkit-transform: translate(16px, 16px);
+} .tile-1-2{
+  -webkit-transform: translate(132px, 16px);
+} .tile-1-3{
+  -webkit-transform: translate(248px, 16px);
+} .tile-1-4{
+  -webkit-transform: translate(364px, 16px);
+} .tile-2-1{
+  -webkit-transform: translate(16px, 132px);
+} .tile-2-2{
+  -webkit-transform: translate(132px, 132px);
+} .tile-2-3{
+  -webkit-transform: translate(248px, 132px);
+} .tile-2-4{
+  -webkit-transform: translate(364px, 132px);
+} .tile-3-1{
+  -webkit-transform: translate(16px, 248px);
+} .tile-3-2{
+  -webkit-transform: translate(132px, 248px);
+} .tile-3-3{
+  -webkit-transform: translate(248px, 248px);
+} .tile-3-4{
+  -webkit-transform: translate(364px, 248px);
+} .tile-4-1{
+  -webkit-transform: translate(16px, 364px);
+} .tile-4-2{
+  -webkit-transform: translate(132px, 364px);
+} .tile-4-3{
+  -webkit-transform: translate(248px, 364px);
+} .tile-4-4{
+  -webkit-transform: translate(364px, 364px);
+}
