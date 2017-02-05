@@ -1,4 +1,4 @@
-var startingTiles = 2;
+var startingTiles = 5;
 var spawnFourTileChance = .1;
 var tileSize = 100;
 var tilePadding = 16;
@@ -13,20 +13,20 @@ $("#tile-container").bind("click", function(){
 $(document).keydown(function(e) {  
   switch(e.which) {
     case 37: // left
-    updateGame(4);
-    break;
+      updateGame(4);
+      break;
 
     case 38: // up
-    updateGame(1);
-    break;
+      updateGame(1);
+      break;
 
     case 39: // right
-    updateGame(2);
-    break;
+      updateGame(2);
+      break;
 
     case 40: // down
-    updateGame(3);
-    break;
+      updateGame(3);
+      break;
     
     case 13: // enter
       resetGame();
@@ -75,7 +75,7 @@ function updateGame(direction){
   if(gameFinished > 0) return; // ignore arrow key presses in game over state
   
   updateBoard(direction);
-  addRandomTile();
+  //addRandomTile();
   updateGameState();
   if(gameFinished){
     showGameOverScreen();
@@ -106,7 +106,7 @@ function updateGameState(){
 function updateBoard(direction){
   if(direction == 2){
     for(var i=0; i<16; i+=4){
-      shiftArray( board.slice(i,i+4), false, false, i/4);
+      shiftArray( board.slice(i,i+4));
     }
   }
 }
@@ -146,7 +146,6 @@ function moveTileStack(startX, startY, destX, destY){
 /* ================ */
 
 function removeBuriedTiles(x,y){
-  //TODO
   var elements = $(".tile-"+x+"-"+y);
 }
 
@@ -161,36 +160,39 @@ function getEmptyTiles(){
 function getCoordsFromIndex(i){
   var x = i%4;
   var y = Math.floor(i/4);
-  return [x+1,y+1];
+  return [y+1,x+1];
 }
 
-function shiftArray(arr, vertical, isReverse, index){
+function shiftArray(arr){
+  console.log("============");
   var newArr = new Array(4);
+  var mergedTiles = [false, false, false, false];
   
+  console.log(arr);
   for(var i=arr.length-2; i>=0; i--){
     if(arr[i]==0) continue;
     
     var val = arr[i];
-    var merged = false;
     var currentPos = i;
     offset = 1;
+    
     while(arr[currentPos+offset] == 0 && currentPos+offset<4){
       offset++;
     }
     
     var newpos = i+offset-1;
-    if(i+offset<4){
+    
+    console.log(mergedTiles);
+    if(i+offset<4 && mergedTiles[newpos]){
       newpos=i+offset;
-      merged = true;
+      mergedTiles[newpos] = true;
+      console.log("Merged at position "+newpos);
     }
     
     arr[newpos] = arr[i];
+    console.log("Moving tile from "+i+" to "+newpos);
     arr[i] = 0;
-    
-    /* var element = $(".tile-"+i+"-"+index);
-    if(merged){
-      element.removeClass("tile-"+val);
-      element.addClass("tile-"+val*2);
-    } */
   }
+  
+  return newArr;
 }
