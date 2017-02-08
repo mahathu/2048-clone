@@ -4,8 +4,10 @@ var tileSize = 100;
 var tilePadding = 16;
 var gameFinished = 0;
 var board = new Array(16);
+var spinEnabled = false;
 
 $("#tile-container").bind("click", function(){
+  if(!spinEnabled) return;
   $(this).addClass("meme");
   setTimeout(function(){ $("#tile-container").removeClass("meme"); }, 2250);
 });
@@ -37,10 +39,6 @@ $(document).keydown(function(e) {
 $(function() {
   initGrid();
   init();
-  
-  /* $("#tile-container").append("<div class='tile tile-16 tile-4-2'></div>");
-  $("#tile-container").append("<div class='tile tile-4 tile-4-2'></div>");
-  $("#tile-container").append("<div class='tile tile-512 tile-4-2'></div>");*/
 });
 
 
@@ -163,36 +161,51 @@ function getCoordsFromIndex(i){
   return [y+1,x+1];
 }
 
-function shiftArray(arr){
-  console.log("============");
-  var newArr = new Array(4);
-  var mergedTiles = [false, false, false, false];
+function shiftArray(arr){  
+  console.log("Input: "+arr);
+  //[0,0,2,0]
+  var offset;
+  var newPos;
+  var tile_val;
+  var merged_tiles = [false,false,false,false];
+  var return_vals = Array();
   
-  console.log(arr);
-  for(var i=arr.length-2; i>=0; i--){
-    if(arr[i]==0) continue;
-    
-    var val = arr[i];
-    var currentPos = i;
+  for(var i=arr.length-1; i>=0; i--){
+    tile_val = arr[i];
+    if(tile_val == 0) continue;
     offset = 1;
     
-    while(arr[currentPos+offset] == 0 && currentPos+offset<4){
+    while(arr[i+offset] == 0 && i+offset<4){
       offset++;
     }
     
-    var newpos = i+offset-1;
+    newPos = i+offset-1;
     
-    console.log(mergedTiles);
-    if(i+offset<4 && mergedTiles[newpos]){
-      newpos=i+offset;
-      mergedTiles[newpos] = true;
-      console.log("Merged at position "+newpos);
+    //merging
+    if(tile_val == arr[i+offset] && !merged_tiles[i+offset]){
+      console.log("Looking to merge...");
+      tile_val *= 2;
+      newPos++;
+      merged_tiles[newPos] = true;
     }
     
-    arr[newpos] = arr[i];
-    console.log("Moving tile from "+i+" to "+newpos);
-    arr[i] = 0;
+    arr[newPos] = tile_val;
+    if(i != newPos)
+      arr[i] = 0;
   }
   
-  return newArr;
+  console.log("Output: "+arr);
+  console.log("");
+  
+  return_vals.push(arr);
+  return return_vals;
 }
+
+
+
+
+
+
+
+
+
