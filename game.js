@@ -41,11 +41,6 @@ $(function() {
   init();
 });
 
-
-  /* ==================== */
- /* game state functions */
-/* ==================== */
-
 function initGrid(){
   for(var i=0; i<16; i++)
     $("#tile-container").append("<div class='tile-bg'></div>");
@@ -56,6 +51,7 @@ function init(){
   hideGameOverScreen();
   for(var i = 0; i < 16; i++)
     board[i] = 0;
+    
   for(var i=0; i<startingTiles; i++)
     addRandomTile();
 }
@@ -96,17 +92,27 @@ function updateGameState(){
   gameFinished = getEmptyTiles().length == 0;
 }
 
-
-  /* ================ */
- /* action functions */
-/* ================ */
-
 function updateBoard(direction){
-  if(direction == 2){
-    for(var i=0; i<16; i+=4){
-      shiftArray( board.slice(i,i+4));
+  printBoard();
+  
+  for(var i=0; i<16; i+=4){
+    var returnVal = shiftArray( board.slice(i,i+4) );
+    var updatedArray = returnVal[0];
+    var tileUpdates = returnVal[1];
+    var merged = returnVal[2];
+    
+    board.splice(i,4,updatedArray[0],updatedArray[1],updatedArray[2],updatedArray[3]); //TODO: improve this
+    
+    for(var startTile in tileUpdates){
+      moveTileStack(parseInt(startTile)+i, tileUpdates[startTile]+i);
     }
+    
+    for(var tile in updatedArray)
+      if(updatedArray[tile] > 0 && merged[tile]){
+        createTileAt(parseInt(tile)+i, updatedArray[tile]);    
+      }
   }
+  printBoard();
 }
 
 function addRandomTile(){
@@ -114,34 +120,33 @@ function addRandomTile(){
   var index = emptyTiles[ Math.floor(Math.random()*emptyTiles.length) ];
   var val = Math.random() < spawnFourTileChance ? 4 : 2;
   board[index] = val;
-  coords = getCoordsFromIndex(index);
-  console.log("Adding tile at index "+index+" | coords: ("+coords[0]+"|"+coords[1]+")");
-  $("#tile-container").append("<div class='tile tile-"+val+" tile-"+coords[0]+"-"+coords[1]+"'></div>");
+  createTileAt(index, val);
 }
 
-function moveTileStack(startX, startY, destX, destY){
-  var elements = $(".tile-"+startX+"-"+startY);
-  var newXOffset = tilePadding + ( (destX-1)*(tileSize + tilePadding) );
+function createTileAt(pos, val){
+  coords = getCoordsFromIndex(pos);
+  var className = "tile-"+coords[1]+"-"+coords[0];
+  
+  
+  $("#tile-container").append("<div class='tile tile-"+val+" "+ className +"'></div>");
+}
+
+function moveTileStack(start, dest){  
+  var startX = getCoordsFromIndex(start)[0];
+  var startY = getCoordsFromIndex(start)[1];
+  var destX = getCoordsFromIndex(dest)[0];
+  var destY = getCoordsFromIndex(dest)[1];
+  
+  var elements = $(".tile-"+startY+"-"+startX);
+  
+  /*var newXOffset = tilePadding + ( (destX-1)*(tileSize + tilePadding) );
   var newYOffset = tilePadding + ( (destY-1)*(tileSize + tilePadding) );
   
-  elements.css( "-webkit-transform", "translate("+newYOffset+"px, "+newXOffset+"px)" );
+  elements.css( "-webkit-transform", "translate("+newYOffset+"px, "+newXOffset+"px)" );*/
   
   elements.removeClass( elements.attr("class").split(" ").pop() ); //remove last class
-  elements.addClass("tile-"+destX+"-"+destY);
+  elements.addClass("tile-"+destY+"-"+destX);
 }
-/* function move(element, x, y){
-  var newXOffset = tilePadding + ( x*(tileSize + tilePadding) );
-  var newYOffset = tilePadding + ( y*(tileSize + tilePadding) );
-
-  element.css( "-webkit-transform", "translate("+newYOffset+"px, "+newXOffset+"px)" );
-  element.removeClass( element.attr("class").split(" ").pop() );
-  element.addClass("tile-"+x+"-"+y);
-} */
-
-
-  /* ================ */
- /* helper functions */
-/* ================ */
 
 function removeBuriedTiles(x,y){
   var elements = $(".tile-"+x+"-"+y);
@@ -158,7 +163,14 @@ function getEmptyTiles(){
 function getCoordsFromIndex(i){
   var x = i%4;
   var y = Math.floor(i/4);
-  return [y+1,x+1];
+  return [x+1,y+1];
+}
+
+//just for debugging
+function printBoard(){
+  for(var i=0; i<16; i+=4){
+    console.log(board.slice(i,i+4));
+  }
 }
 
 function shiftArray(arr){  
@@ -168,7 +180,7 @@ function shiftArray(arr){
   var newPos;
   var tile_val;
   var merged_tiles = [false,false,false,false];
-  var return_vals = Array();
+  var tile_updates = {};
   
   for(var i=arr.length-1; i>=0; i--){
     tile_val = arr[i];
@@ -183,22 +195,24 @@ function shiftArray(arr){
     
     //merging
     if(tile_val == arr[i+offset] && !merged_tiles[i+offset]){
-      console.log("Looking to merge...");
+      //console.log("Looking to merge...");
       tile_val *= 2;
       newPos++;
       merged_tiles[newPos] = true;
     }
     
     arr[newPos] = tile_val;
-    if(i != newPos)
-      arr[i] = 0;
+      
+    if(i == newPos) continue; //continue if tile hasn't moved from it's initial position
+    
+    arr[i] = 0;
+    tile_updates[i] = newPos;
   }
   
   console.log("Output: "+arr);
-  console.log("");
   
-  return_vals.push(arr);
-  return return_vals;
+  //console.log(tile_updates);
+  return [arr,tile_updates, merged_tiles];
 }
 
 

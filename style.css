@@ -143,49 +143,53 @@ button{
   border-radius: 4px;
 }
 
+.tile-new{
+outline: 2px solid red;
+}
+
 .tile-2::after{
   content: "2";
-  background-color: rgba(0,255,0,.05);
+  background-color: #a0d233;
   z-index: 1;
 } .tile-4::after{
   content: "4";
-  background-color: rgba(10,255,0,.15);
+  background-color: #90bd2d;
   z-index: 2;
 } .tile-8::after{
   content: "8";
-  background-color: rgba(20,255,0,.25);
+  background-color: #80a828;
   z-index: 3;
 } .tile-16::after{
   content: "16";
-  background-color: rgba(20,255,0,.35);
+  background-color: #709323;
   z-index: 4;
 } .tile-32::after{
   content: "32";
-  background-color: rgba(30,255,0,.45);
+  background-color: #607e1e;
   z-index: 5;
 } .tile-64::after{
   content: "64";
-  background-color: rgba(40,255,0,.55);
+  background-color: #506919;
   z-index: 6;
 } .tile-128::after{
   content: "128";
-  background-color: rgba(50,255,0,.65);
+  background-color: #405414;
   z-index: 7;
 } .tile-256::after{
   content: "256";
-  background-color: rgba(60,255,0,.75);
+  background-color: #303f0f;
   z-index: 8;
 } .tile-512::after{
   content: "512";
-  background-color: rgba(70,255,0,.85);
+  background-color: #202a0a;
   z-index: 9;
 } .tile-1024::after{
   content: "1024";
-  background-color: rgba(80,255,0,.95);
+  background-color: #101505;
   z-index: 10;
 } .tile-2048::after{
   content: "2048";
-  background-color: rgba(90,255,0,1);
+  background-color: #000000;
   z-index: 11;
 }
 
