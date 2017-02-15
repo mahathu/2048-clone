@@ -55,9 +55,10 @@ function init(){
   for(var i=0; i<startingTiles; i++)
     addRandomTile();
 
-  createTileAt(0,4);
+  createTileAt(0,2);
   createTileAt(1,2);
   createTileAt(2,4);
+  createTileAt(3,4);
 }
 
 function resetGame(){
@@ -114,10 +115,18 @@ function updateBoard(direction){
       moveTileStack(j+i, tileUpdates[j]+i);
     }
     
-    for(var tile in updatedArray)
+    /*for(var tile in updatedArray){
       if(updatedArray[tile] > 0 && merged[tile]){ //TODO: check if updatedArray[tile] > 0 is necessary
-        createTileAt(parseInt(tile)+i, updatedArray[tile]);    
+        setTimeout(function(){
+          createTileAt(3, 8);
+        }, 100);  
       }
+    } */
+    for(var tile in merged){
+      if(merged[tile]){
+        createTileAt(i+parseInt(tile), board[i+parseInt(tile)]); //TODO: setTimeout here
+      }
+    }
   }
   printBoard();
 }
