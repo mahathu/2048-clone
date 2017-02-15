@@ -1,4 +1,4 @@
-var startingTiles = 0;
+var startingTiles = 5;
 var spawnFourTileChance = .1;
 var tileSize = 100;
 var tilePadding = 16;
@@ -54,10 +54,6 @@ function init(){
     
   for(var i=0; i<startingTiles; i++)
     addRandomTile();
-
-  createTileAt(0,4);
-  createTileAt(1,2);
-  createTileAt(2,4);
 }
 
 function resetGame(){
@@ -107,15 +103,12 @@ function updateBoard(direction){
     
     board.splice(i,4,updatedArray[0],updatedArray[1],updatedArray[2],updatedArray[3]); //TODO: improve this
     
-    for(var j = 3; j>=0; j--){
-      if( tileUpdates[j] == 0 ) continue;
-      
-      console.log(j + " => " + tileUpdates[j]);
-      moveTileStack(j+i, tileUpdates[j]+i);
+    for(var startTile in tileUpdates){
+      moveTileStack(parseInt(startTile)+i, tileUpdates[startTile]+i);
     }
     
     for(var tile in updatedArray)
-      if(updatedArray[tile] > 0 && merged[tile]){ //TODO: check if updatedArray[tile] > 0 is necessary
+      if(updatedArray[tile] > 0 && merged[tile]){
         createTileAt(parseInt(tile)+i, updatedArray[tile]);    
       }
   }
@@ -126,11 +119,11 @@ function addRandomTile(){
   var emptyTiles = getEmptyTiles();
   var index = emptyTiles[ Math.floor(Math.random()*emptyTiles.length) ];
   var val = Math.random() < spawnFourTileChance ? 4 : 2;
+  board[index] = val;
   createTileAt(index, val);
 }
 
 function createTileAt(pos, val){
-  board[pos] = val;
   coords = getCoordsFromIndex(pos);
   var className = "tile-"+coords[1]+"-"+coords[0];
   
@@ -138,14 +131,12 @@ function createTileAt(pos, val){
   $("#tile-container").append("<div class='tile tile-"+val+" "+ className +"'></div>");
 }
 
-function moveTileStack(start, dest){
+function moveTileStack(start, dest){  
   var startX = getCoordsFromIndex(start)[0];
   var startY = getCoordsFromIndex(start)[1];
   var destX = getCoordsFromIndex(dest)[0];
   var destY = getCoordsFromIndex(dest)[1];
   
-  //alert("Moving from "+".tile-"+startY+"-"+startX+" to "+"tile-"+destY+"-"+destX);
-                                                  
   var elements = $(".tile-"+startY+"-"+startX);
   
   /*var newXOffset = tilePadding + ( (destX-1)*(tileSize + tilePadding) );
@@ -183,13 +174,13 @@ function printBoard(){
 }
 
 function shiftArray(arr){  
-  //console.log("Input: "+arr);
+  console.log("Input: "+arr);
   //[0,0,2,0]
   var offset;
   var newPos;
   var tile_val;
   var merged_tiles = [false,false,false,false];
-  var tile_updates = [0,0,0,0];
+  var tile_updates = {};
   
   for(var i=arr.length-1; i>=0; i--){
     tile_val = arr[i];
@@ -218,13 +209,17 @@ function shiftArray(arr){
     tile_updates[i] = newPos;
   }
   
-  //console.log("Output: "+arr);
-  for(var i=0; i<4; i++){
-    //if(tile_updates[i] !== undefined)
-      //console.log(i + " => " + tile_updates[i]);
-  }
+  console.log("Output: "+arr);
   
-  //console.log("==");
   //console.log(tile_updates);
   return [arr,tile_updates, merged_tiles];
 }
+
+
+
+
+
+
+
+
+
